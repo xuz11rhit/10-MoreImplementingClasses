@@ -225,7 +225,11 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
-
+        self.start = start.clone()
+        self.end = end.clone()
+        self.o_start = start
+        self.o_end = end
+        self.count = 0
 
     def __repr__(self):
         """
@@ -335,8 +339,9 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
-        self.start = start.clone()
-        self.end = end.clone()
+        new_line = Line(self.start, self.end)
+        self.count = self.count + 1
+        return new_line
 
     def reverse(self):
         """
@@ -371,9 +376,10 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
-        end = self.start
-        start = self.end
-        return Line(start, end)
+        x = self.end
+        self.end = self.start
+        self.start = x
+        return Line(self.start, self.end)
 
     def slope(self):
         """
@@ -410,6 +416,13 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
+        import math
+        if (self.end.x - self.start.x == 0):
+            return math.inf
+        k1 = self.end.y - self.start.y
+        k2 = self.end.x - self.start.x
+        slope = k1 / k2
+        return slope
 
     def length(self):
         """
@@ -443,6 +456,11 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
+        import math
+        x = (self.end.x - self.start.x) ** 2
+        y = (self.end.y - self.start.y) ** 2
+        length = math.sqrt(x + y)
+        return length
 
     def get_number_of_clones(self):
         """
@@ -517,6 +535,13 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
+        x1 = self.start.x + other_line.start.x
+        y1 = self.start.y + other_line.start.y
+        x2 = self.end.x + other_line.end.x
+        y2 = self.end.y + other_line.end.y
+        start = Point(x1, y1)
+        end = Point(x2, y2)
+        return Line(start, end)
 
     def line_minus(self, other_line):
         """
@@ -551,6 +576,13 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
+        x1 = self.start.x - other_line.start.x
+        y1 = self.start.y - other_line.start.y
+        x2 = self.end.x - other_line.end.x
+        y2 = self.end.y - other_line.end.y
+        start = Point(x1, y1)
+        end = Point(x2, y2)
+        return Line(start, end)
 
     def midpoint(self):
         """
@@ -578,6 +610,11 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
+        x1 = self.start.x + self.end.x
+        y1 = self.start.y + self.end.y
+
+        midpoint = Point(x1 / 2, y1 / 2)
+        return midpoint
 
     def is_parallel(self, line2):
         """
@@ -642,6 +679,10 @@ class Line(object):
         # floating-point errors while distinguishing numbers that really
         # are different from each other.
         #######################################################################
+        if round(self.slope(), 12) == round(line2.slope(), 12):
+            return True
+        else:
+            return False
 
     def reset(self):
         """
@@ -681,7 +722,8 @@ class Line(object):
         #        The tests are already written (below).
         #        They include the Example in the above doc-string.
         # ---------------------------------------------------------------------
-
+        self.start = self.o_start
+        self.end = self.o_end
 
 ###############################################################################
 # The TEST functions for the  Line  class begin here.
